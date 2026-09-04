@@ -1,0 +1,9 @@
+"express": "^5.2.1"
+major. minor. patch versions
+
+patches are used for bug fixes, or small change etc.
+Minor version is changed for minor feature upgrade. where it will still be backward compatible.
+Major version is changed when the code change will break the existing repos or code. when there are breaking changes. This will not be backward compatible.
+^ it will auto update our dependency to any latest minor, patch changes which is backward compatible.
+~ it will auto update our dependency to any latest major version changes which might not be backward compatible and application might break.
+
