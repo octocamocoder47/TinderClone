@@ -1,87 +1,48 @@
-const express = require("express");
-const {adminAuth, userAuth} = require("./middlewares/auth");
+const express = require("express"); 
+const {connectDB} = require("./config/database");
 const app = express();
+const {User} = require("./models/users");
 
-// this is also valid and result will be same.
-// app.use("/route", [rh, rh2], rh3, rh4);
+app.post("/signup", async (req, res) => {
+    // const userObj = {
+    //     "firstName": "Pransh",
+    //     "lastName": "Gupta",
+    //     "emailId": "abcd@gmail.com",
+    //     "password": "pransh@123"
+    // };
+    const userObj = {
+        "firstName": "Viral",
+        "lastName": "Kohli",
+        "emailId": "virat@gmail.com",
+        "password": "virat@123"
+    };
+    
+    // creating a new instance of a user model
+    const user = new User(userObj);
 
-// app.use(
-//     "/user", 
-//     [(req, res, next) => {
-//         console.log("Handling the route user!!");
-//         // res.send("Response!!");
-//         next();
-//         // res.send("Response!!");
-//     }, 
-//     (req, res, next) => {
-//         console.log("Handling the route user 2!!");
-//         // res.send("2nd Response!!");
-//         next();
-//     }, 
-//     (req, res, next) => {
-//         console.log("Handling the route user 3!!");
-//         // res.send("3rd Response!!");
-//         next();
-//     }, 
-//     (req, res, next) => {
-//         console.log("Handling the route user 4!!");
-//         // res.send("4th Response!!");
-//         next();
-//     }
-//     ]
-// );
+    try {
+        await user.save();
+        res.send("User added successfully!");
+    } catch (err) {
+        res.status(400).send("Error saving the user: " + err.message);
+    }
+});
 
+app.get("/users", async (req, res) => {
+    const user = new User();
+});
 
-// app.get("/user", (req, res, next) => {
-//     console.log("Handling the route user 2!");
-//     next();
-//     // res.send("2nd route handler!");
+connectDB().then(() => {
+    console.log("Database connected successfully.");
+    const PORT = 8080;
+    app.listen(PORT, ()=> {
+        console.log("server is successfully listening on http://localhost:", PORT);
+    });
+}).catch(err => {
+    console.error("Database can not be connected:", err.message);
+});
+
+// const PORT = 8080;
+// app.listen(PORT, ()=> {
+//     console.log("server is successfully listening on http://localhost:", PORT);
 // });
-// app.get("/user", (req, res, next) => {
-//     console.log("Handling the route user!");
-//     next();
-// });
-// app.get("/user", (req, res, next) => {
-//     console.log("Handling the route user 2!");
-//     // next();
-//     res.send("2nd route handler!");
-// });
-
-
-// there is a small difference between all and use function
-// app.all("/admin", (req, res, next) => {});
-
-// Handle Auth middleware for all requests GET, POST, DELETE, PUT
-// app.use("/admin", (req, res, next) => {
-//     const token = "xyz";
-//     const isAdminAuthorized = token === "xyz";
-//     if(isAdminAuthorized) {
-//         next();
-//     }
-//     res.status(401).send("You are not an authorized user");
-// });
-
-app.use("/admin", adminAuth);
-
-app.post("/user/login", (req, res) => {
-    res.send("user logged in successfully")
-});
-
-app.get("/user", userAuth, (req, res) => {
-    res.send("user data sent")
-});
-
-app.get("/admin/getAllData", (req, res) => {
-    res.send("All data sent");
-});
-
-app.get("/admin/deleteUser", (req, res) => {
-    res.send("Deleted a user");
-});
-
-
-
-const PORT = 8080;
-app.listen(PORT, ()=> {
-    console.log("server is successfully listening on http://localhost:", PORT);
-});

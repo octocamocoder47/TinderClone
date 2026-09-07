@@ -1,8 +1,10 @@
 version: '3.8'
 services:
   mongodb:
-    image: mongo:6.0
-    container_name: mongodb_dev
+    # image: mongo:6.0
+    build: .
+    image: devtinder-mongodb:6.0
+    container_name: mongodb
     restart: unless-stopped
     ports:
       - "27017:27017"
@@ -13,7 +15,12 @@ services:
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     volumes:
       - mongodb_data:/data/db
-      - ./initdb:/docker-entrypoint-initdb.d:ro
+      # - ./initdb:/docker-entrypoint-initdb.d:ro
 
 volumes:
   mongodb_data:
+
+networks:
+  default:
+    name: podman
+    external: true
