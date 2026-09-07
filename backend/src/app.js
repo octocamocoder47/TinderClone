@@ -5,16 +5,16 @@ const {userModel: User} = require("./models/users");
 
 app.post("/signup", async (req, res) => {
     // const userObj = {
-    //     "firstName": "Pransh",
-    //     "lastName": "Gupta",
-    //     "emailId": "abcd@gmail.com",
-    //     "password": "pransh@123"
+    //     firstName: "Pransh",
+    //     lastName: "Gupta",
+    //     emailId: "abcd@gmail.com",
+    //     password: "pransh@123"
     // };
     const userObj = {
-        "firstName": "Viral",
-        "lastName": "Kohli",
-        "emailId": "virat@gmail.com",
-        "password": "virat@123"
+        firstName: "Viral",
+        lastName: "Kohli",
+        emailId: "virat@gmail.com",
+        password: "virat@123"
     };
     
     // creating a new instance of a user model
