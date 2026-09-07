@@ -1,7 +1,7 @@
 const express = require("express"); 
 const {connectDB} = require("./config/database");
 const app = express();
-const {User} = require("./models/users");
+const {userModel: User} = require("./models/users");
 
 app.post("/signup", async (req, res) => {
     // const userObj = {

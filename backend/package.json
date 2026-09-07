@@ -20,13 +20,14 @@
   "scripts": {
     "clean": "node clean.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./src/app.js"
+    "dev": "nodemon --legacy-watch ./src/app.js"
   },
   "dependencies": {
     "express": "^5.2.1",
     "mongoose": "^9.9.4"
   },
   "devDependencies": {
+    "nodemon": "^3.1.14",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1"
   }
