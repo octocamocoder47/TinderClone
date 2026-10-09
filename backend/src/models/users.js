@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -20,11 +21,21 @@ const userSchema = new mongoose.Schema({
         require: true,
         unique: true,
         trim: true,
+        validate(value) {
+            if(!validator.isEmail(value)) {
+                throw new Error("Invalid email address: " + value)
+            }
+        },
     },
     password: {
         type: String,
         require: true,
         minLength: 8,
+        validate(value) {
+            if(!validator.isStrongPassword(value)) {
+                throw new Error("Enter a strong password");
+            }
+        },
     },
     age: {
         type: Number,
@@ -38,11 +49,16 @@ const userSchema = new mongoose.Schema({
             if(!["male", "female", "others"].includes(value)){
                 throw new Error("Gender data is not valid")
             }
-        }
+        },
     },
     photoUrl: {
         type: String,
         default: "https://www.magnific.com/free-photos-vectors/default-user",
+        validate(value) {
+            if(!validator.isURL(value)) {
+                throw new Error("Invalid Photo URL: " + value);
+            }
+        },
     },
     about: {
         type: String,
@@ -57,7 +73,7 @@ const userSchema = new mongoose.Schema({
             if(l>6) {
                 throw new Error("Only 6 skills are allowed");
             }
-        }
+        },
     },
 }, {
     timestamps: true,
