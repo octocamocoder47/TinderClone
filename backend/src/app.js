@@ -68,14 +68,14 @@ app.delete("/user", async (req, res) => {
 });
 
 app.patch("/user", async (req, res) => {
+    const userData = req.body;
+    const options = {
+        returnDocument: "before",
+        // returnDocument: "after"
+        runValidators: true,
+    }
     try {
-        const userData = req.body;
-        const options = {
-            returnDocument: "before",
-            // returnDocument: "after"
-            runValidators: true,
-        }
-        await User.findByIdAndUpdate({_id: userData.userID }, userData, options);
+        const user = await User.findByIdAndUpdate({_id: userData.userID }, userData, options);
         res.send("User updated successfully");
     } catch(err) {
         res.status(400).send("Update failed: " + err.message);
