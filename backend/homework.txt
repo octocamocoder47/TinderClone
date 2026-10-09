@@ -1,0 +1,3 @@
+ - API update user with email id
+ - Add API level validation on patch request and signup post API
+ - Data Sanitization - Add API validation for each field

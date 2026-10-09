@@ -67,15 +67,47 @@ app.delete("/user", async (req, res) => {
     }
 });
 
-app.patch("/user", async (req, res) => {
+// app.patch("/user", async (req, res) => {
+//     const userData = req.body;
+//     const options = {
+//         returnDocument: "before",
+//         // returnDocument: "after"
+//         runValidators: true,
+//     }
+//     const ALLOWED_UPDATES = ["userID", "photoUrl", "about", "gender", "age", "skills"];
+//     try {
+//         const isUpdateAllowed = Object.keys(userData).every(k => 
+//             ALLOWED_UPDATES.includes(k)
+//         );
+//         if(!isUpdateAllowed) {
+//             throw new Error("Update not allowed for some fields");
+//         }
+//         const user = await User.findByIdAndUpdate({_id: userData.userID }, userData, options);
+//         res.send("User updated successfully");
+//     } catch(err) {
+//         res.status(400).send("Update failed: " + err.message);
+//     }
+// });
+
+app.patch("/user/:userID", async (req, res) => {
+    const userID = req.params?.userID;
     const userData = req.body;
     const options = {
         returnDocument: "before",
-        // returnDocument: "after"
         runValidators: true,
     }
+    const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
     try {
-        const user = await User.findByIdAndUpdate({_id: userData.userID }, userData, options);
+        const isUpdateAllowed = Object.keys(userData).every(k => 
+            ALLOWED_UPDATES.includes(k)
+        );
+        if(!isUpdateAllowed) {
+            throw new Error("Update not allowed for some fields");
+        }
+        if(data?.skills.length > 6) {
+            throw new Error("Only 6 skills are allowed");
+        }
+        const user = await User.findByIdAndUpdate({_id: userID }, userData, options);
         res.send("User updated successfully");
     } catch(err) {
         res.status(400).send("Update failed: " + err.message);
