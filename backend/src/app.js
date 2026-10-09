@@ -56,6 +56,31 @@ app.get("/feed", async (req, res) => {
     }
 });
 
+app.delete("/user", async (req, res) => {
+    const userID = req.body.userID;
+    try {
+        // const user = await User.findByIdAndDelete({ _id: userID });
+        const user = await User.findByIdAndDelete(userID);
+        res.send("User deleted successfully.");
+    } catch(err) {
+        res.status(400).send("Something went wrong");
+    }
+});
+
+app.patch("/user", async (req, res) => {
+    try {
+        const userData = req.body;
+        const options = {
+            returnDocument: "before",
+            // returnDocument: "after"
+        }
+        await User.findByIdAndUpdate({_id: userData.userID }, userData, options);
+        res.send("User updated successfully");
+    } catch(err) {
+        res.status(400).send("Something went wrong");
+    }
+});
+
 connectDB().then(() => {
     console.log("Database connected successfully.");
     const PORT = 8080;
@@ -71,4 +96,3 @@ connectDB().then(() => {
 //     console.log("server is successfully listening on http://localhost:", PORT);
 // });
 
-// 38.22
