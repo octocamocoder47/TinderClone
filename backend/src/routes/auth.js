@@ -3,15 +3,15 @@ const authRouter = express.Router();
 
 
 const {userModel: User} = require("../models/users");
-const bcrypt = require("bcrypt");
 const {validateSignUpData} = require("../utils/validation");
+const {getEncryptedPassword, clearCookies} = require("../utils/utils");
 
 
 authRouter.post("/signup", async (req, res) => {
     try {
         validateSignUpData(req);
         const {firstName, lastName, emailId, password} = req.body;
-        const passwordHash = await bcrypt.hash(password, 10);
+        const passwordHash = await getEncryptedPassword(password);
         const user = new User({
             firstName,
             lastName,
@@ -43,6 +43,14 @@ authRouter.post("/login", async (req, res) => {
     } catch (err) {
         res.status(400).send("ERROR: " + err.message);
     }
+});
+
+authRouter.post("/logout", async (req, res) => {
+    // res.cookie("token", null, {
+    //     expires: new Date(Date.now()),
+    // });
+    clearCookies(res);
+    res.send("Logout successfull");
 });
 
 

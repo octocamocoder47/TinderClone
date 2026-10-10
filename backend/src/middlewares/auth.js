@@ -1,6 +1,6 @@
 
 const jwt = require("jsonwebtoken");
-const User = require("../models/users");
+const {userModel: User} = require("../models/users");
 const JWT_SECRET = "fnirqo9wia9";
 
 // const adminAuth = (req, res, next) => {
@@ -27,8 +27,8 @@ const userAuth = async (req, res, next) => {
         if(!token) {
             throw new Error("Invalid Token")
         }
-        const {_id} = await jwt.verify(token, JWT_SECRET);
-        const user = await User.findById(_id);
+        const userId = await jwt.verify(token, JWT_SECRET);
+        const user = await User.findById(userId);
         if(!user) {
             throw new Error("User doesn't exist");
         }
