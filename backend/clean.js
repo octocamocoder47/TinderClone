@@ -1,6 +1,6 @@
 const fs = require('fs');
 const folders = [
-    'node_modules',
+    // 'node_modules',
     'dist', 
     '.parcel-cache'
 ];

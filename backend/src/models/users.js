@@ -94,7 +94,13 @@ userSchema.methods.validatePassword = async function (passwordInputByUser) {
     const passwordHash = user.password;
     const isPasswordValid = await bcrypt.compare(passwordInputByUser, passwordHash);
     return isPasswordValid;
-}
+};
+
+// userSchema.methods.getEncryptedPassword = async function (password) {
+//     const user = this;
+//     const passwordHash = await bcrypt.hash(password, 10);
+//     return passwordHash;
+// };
 
 const userModel = mongoose.model("User", userSchema);
 
