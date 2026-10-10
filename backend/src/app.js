@@ -56,17 +56,23 @@ app.get("/feed", async (req, res) => {
     }
 });
 
+
+// findOneAndDelete is used to delete fields by using custom filter.
 app.delete("/user", async (req, res) => {
     const userID = req.body.userID;
+    const emailId = req.body.emailId;
     try {
         // const user = await User.findByIdAndDelete({ _id: userID });
-        const user = await User.findByIdAndDelete(userID);
+        // const user = await User.findByIdAndDelete(userID);
+        const user = await User.findOneAndDelete({emailId: emailId});
         res.send("User deleted successfully.");
     } catch(err) {
         res.status(400).send("Something went wrong");
     }
 });
 
+
+// findOneAndUpdate is used to update fields by using custom filter. in this function upsert option is used to insert if it doesn't exists. const options = { new: true, upsert: true, runValidators: true }
 // app.patch("/user", async (req, res) => {
 //     const userData = req.body;
 //     const options = {
@@ -82,7 +88,8 @@ app.delete("/user", async (req, res) => {
 //         if(!isUpdateAllowed) {
 //             throw new Error("Update not allowed for some fields");
 //         }
-//         const user = await User.findByIdAndUpdate({_id: userData.userID }, userData, options);
+//         // const user = await User.findByIdAndUpdate({_id: userData.userID }, userData, options);
+//         const user = await User.findOneAndUpdate({emailId: userData.emailId }, userData, options);
 //         res.send("User updated successfully");
 //     } catch(err) {
 //         res.status(400).send("Update failed: " + err.message);
