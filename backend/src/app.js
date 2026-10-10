@@ -4,8 +4,14 @@ const app = express();
 const {userModel: User} = require("./models/users");
 const {validateSignUpData} = require("./utils/validation");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const {userAuth} = require("./middlewares/auth");
+
+const JWT_SECRET = "fnirqo9wia9";
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
     try {
@@ -64,8 +70,17 @@ app.post("/login", async (req, res) => {
             throw new Error("Invalid credentials")
         }
         const passwordHash = user.password;
-        const isPasswordValid = await bcrypt.compare(password, passwordHash);
+        // const isPasswordValid = await bcrypt.compare(password, passwordHash);
+        const isPasswordValid = await user.validatePassword(password);
         if(isPasswordValid) {
+            // create a jwt token
+            // token will expire immediately with 0d
+            // const token = await jwt.sign({_id: user._id}, JWT_SECRET, {expiresIn: "0d"});
+            // const token = await jwt.sign({_id: user._id}, JWT_SECRET, {expiresIn: "7d"});
+            const token = await user.getJWT();
+            // console.log(token);
+            // Add a token to a cookie and send back to user
+            res.cookie("token", token, { expires: new Date(Date.now() + 8 * 3600000), httpOnly: true});
             res.send("Login Successfull!");
         } else {
             throw new Error("Invalid credentials")
@@ -73,6 +88,37 @@ app.post("/login", async (req, res) => {
     } catch (err) {
         res.status(400).send("ERROR: " + err.message);
     }
+});
+
+
+// app.use(userAuth());
+
+app.get("/profile", userAuth, async (req, res) => {
+    try {
+        // const cookies = req.cookies;
+        // const {token} = cookies;
+        // if(!token) {
+        //     throw new Error("Invalid Token")
+        // }
+        // // validate token
+        // const decodedMessage = jwt.verify(token, JWT_SECRET);
+        // const {_id} = decodedMessage;
+        // const user = await User.findById(_id);
+        // if(!user) {
+        //     throw new Error("User doesn't exist");
+        // }
+
+        // // const isTokenValid = 
+        // console.log(cookies);
+        res.send(req.user);
+    } catch (err) {
+        res.status(400).send("ERROR: " + err.message);
+    }
+});
+
+app.post("/sendConnectionRequest", userAuth, async (req, res) => {
+    console.log("sending a connection request.");
+    res.send(req.user.firstName + "sent connection request.");
 });
 
 // get user by email
