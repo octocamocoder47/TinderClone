@@ -1,6 +1,6 @@
 
 const jwt = require("jsonwebtoken");
-const {userModel: User} = require("../models/users");
+const User = require("../models/users");
 const JWT_SECRET = "fnirqo9wia9";
 
 // const adminAuth = (req, res, next) => {

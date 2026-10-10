@@ -2,7 +2,7 @@ const express = require("express");
 const userRouter = express.Router();
 
 
-const {userModel: User} = require("../models/users");
+const User = require("../models/users");
 
 
 // get user by email

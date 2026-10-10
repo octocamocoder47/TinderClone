@@ -47,11 +47,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         lowercase: true,
         trim: true,
-        validate(value) {
-            if(!["male", "female", "others"].includes(value)){
-                throw new Error("Gender data is not valid")
-            }
+        enum: {
+            values: ["male", "female", "others"],
+            message: `{VALUE} is not supported`,
         },
+        // validate(value) {
+        //     if(!["male", "female", "others"].includes(value)){
+        //         throw new Error("Gender data is not valid")
+        //     }
+        // },
     },
     photoUrl: {
         type: String,
@@ -81,6 +85,9 @@ const userSchema = new mongoose.Schema({
     timestamps: true,
 });
 
+
+// userSchema.index({firstName: 1, lastName: 1});
+
 const JWT_SECRET = "fnirqo9wia9";
 
 userSchema.methods.getJWT = async function () {
@@ -96,6 +103,6 @@ userSchema.methods.validatePassword = async function (passwordInputByUser) {
     return isPasswordValid;
 };
 
-const userModel = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
-module.exports = {userModel};
+module.exports = User;

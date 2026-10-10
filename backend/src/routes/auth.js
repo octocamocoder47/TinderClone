@@ -2,7 +2,7 @@ const express = require("express");
 const authRouter = express.Router();
 
 
-const {userModel: User} = require("../models/users");
+const User = require("../models/users");
 const {validateSignUpData} = require("../utils/validation");
 const {getEncryptedPassword, clearCookies} = require("../utils/utils");
 

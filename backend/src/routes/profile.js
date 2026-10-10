@@ -2,7 +2,7 @@ const express = require("express");
 const profileRouter = express.Router();
 
 
-const {userModel: User} = require("../models/users");
+// const User = require("../models/users");
 const {userAuth} = require("../middlewares/auth");
 const {validateEditProfileData} = require("../utils/validation");
 const {getEncryptedPassword, clearCookies} = require("../utils/utils");
