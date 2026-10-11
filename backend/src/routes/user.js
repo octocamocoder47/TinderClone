@@ -7,6 +7,7 @@ const ConnectionRequest = require("../models/connectionRequest");
 const { userAuth } = require("../middlewares/auth");
 
 const USER_SAFE_DATA = ["firstName", "lastName", "photoUrl", "age", "about", "gender", "skills"]
+const LimitCount = 20
 
 // get user by email
 userRouter.get("/user", async (req, res) => {
@@ -35,7 +36,7 @@ userRouter.delete("/user", async (req, res) => {
 });
 
 // Feed API - GET /feed - get all the users from the database
-userRouter.get("/user/feed", async (req, res) => {
+userRouter.get("/user/all", async (req, res) => {
     try {
         const users = await User.find({});
         res.send(users);
@@ -98,6 +99,107 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
         res.json(data);
     } catch(err) {
         res.status(400).send("ERROR: " + err.message);
+    }
+});
+
+// userRouter.get("/user/feed", userAuth, async (req, res) => {
+//     try {
+//         const loggedInUserId = req.user._id;
+//         const feed = await User.aggregate([
+//             // 1. Exclude the logged-in user
+//             { 
+//                 $match: { 
+//                 _id: { $ne: loggedInUserId } 
+//                 } 
+//             },
+
+//             // 2. Lookup existing connection requests between the two users
+//             {
+//                 $lookup: {
+//                 from: "ConnectionRequest", // Must match the actual MongoDB collection name (usually lowercase & plural)
+//                 let: { targetUserId: "$_id" },
+//                 pipeline: [
+//                     {
+//                     $match: {
+//                         $expr: {
+//                         $or: [
+//                             { $and: [{ $eq: ["$fromUserId", "$$targetUserId"] }, { $eq: ["$toUserId", loggedInUserId] }] },
+//                             { $and: [{ $eq: ["$fromUserId", loggedInUserId] }, { $eq: ["$toUserId", "$$targetUserId"] }] }
+//                         ]
+//                         }
+//                     }
+//                     }
+//                 ],
+//                 as: "connectionInfo"
+//                 }
+//             },
+
+//             // 3. Keep only users with NO prior connection request (empty array)
+//             {
+//                 $match: {
+//                 connectionInfo: { $size: 0 }
+//                 }
+//             },
+
+//             // 4. Randomize profiles for a feed experience (or use { $limit: LimitCount } for deterministic results)
+//             { $sample: { size: LimitCount } },
+
+//             // 5. Remove temporary and sensitive fields from output
+//             {
+//                 $project: {
+//                 connectionInfo: 0,
+//                 password: 0,
+//                 __v: 0
+//                 }
+//             }
+//         ]);
+
+//     } catch(err) {
+//         res.status(400).json({message: err.message});
+//     }
+// });
+
+userRouter.get("/user/feed", userAuth, async (req, res) => {
+    try {
+        const loggedInUserId = req.user._id;
+        // we have to construct query for below conditions.
+        // we have to find users how are present in users table but not connectionsRequests table where loggedinUser is paired with them in any way.
+        // user should see all users except
+        // 0. his own profile
+        // 1. accepted profiles
+        // 2. rejected profiles
+        // 3. interested profiles
+        
+        // find all connection requests (sent + received)
+        const connectionRequests = await ConnectionRequest.find({
+            $or: [
+                { fromUserId: loggedInUserId},
+                { toUserId: loggedInUserId},
+            ],
+        })
+        .select(["fromUserId", "toUserId"])
+        // .populate("fromUserId", ["firstName", "lastName"])
+        // .populate("toUserId", ["firstName", "lastName"])
+        ;
+
+        const hideUsersFromFeed = new Set();
+        connectionRequests.forEach(request => {
+            hideUsersFromFeed.add(request.fromUserId.toString());
+            hideUsersFromFeed.add(request.toUserId.toString());
+        });
+
+        const userFeed = await User.find({
+            $and: [
+                { _id: { $nin: Array.from(hideUsersFromFeed) }, },
+                { _id: { $ne: loggedInUserId, } },
+            ]
+        })
+        .select(USER_SAFE_DATA)
+        ;
+
+        res.send(userFeed);
+    } catch(err) {
+        res.status(400).json({message: err.message});
     }
 });
 

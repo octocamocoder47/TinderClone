@@ -20,3 +20,16 @@ Files created
 - `docker-compose.yml`: Compose config for MongoDB
 - `.env.example`: Example environment variables
 - `initdb/init.js`: Optional init script run on first startup
+
+Seed demo users
+---------------
+After MongoDB and the backend API are running, run:
+```bash
+npm run seed
+```
+
+The seed command uses the app's HTTP endpoints: `/signup`, `/login`,
+`/profile/edit`, `/request/send`, and `/request/review`. Set
+`API_BASE_URL` if the API is not at `http://localhost:8080`.
+It creates 24 demo accounts and 6 requests involving only 12 accounts. New
+demo accounts share the password `DemoUser2026!`.
