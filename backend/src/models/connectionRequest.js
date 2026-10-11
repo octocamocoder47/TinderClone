@@ -4,10 +4,12 @@ const mongoose = require("mongoose");
 const connectionRequestSchema = new mongoose.Schema({
     fromUserId: {
         type: mongoose.Schema.Types.ObjectId,
+        ref: "User", // reference to the User collection
         required: true,
     },
     toUserId: {
         type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true,
     },
     status: {
@@ -25,12 +27,16 @@ const connectionRequestSchema = new mongoose.Schema({
 
 connectionRequestSchema.index({fromUserId: 1, toUserId: 1});
 
-connectionRequestSchema.pre("save", async function (next) {
+// commented this because we want to run this validation only when request is being created.
+connectionRequestSchema.pre("save", async function (options) {
+    if (!options || !options.runApiLogic) {
+        return; // Simply return to skip validation and proceed to save
+    }
     const connectionRequest = this;
     if(connectionRequest.fromUserId.equals(connectionRequest.toUserId)) {
         throw new Error("can't send request to yourself");
     };
-    next();
+    return;
 });
 
 const ConnectionRequest = mongoose.model("ConnectionRequest", connectionRequestSchema);
