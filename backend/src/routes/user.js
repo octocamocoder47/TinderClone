@@ -159,9 +159,14 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
 //     }
 // });
 
-userRouter.get("/user/feed", userAuth, async (req, res) => {
+userRouter.get("/feed", userAuth, async (req, res) => {
     try {
         const loggedInUserId = req.user._id;
+        const page = parseInt(req.query.page) || 1;
+        let limit = parseInt(req.query.limit) || 10;
+        limit = limit>30? 30: limit;
+        limit = limit<2? 2: limit;
+        const skip = (page-1) * limit;
         // we have to construct query for below conditions.
         // we have to find users how are present in users table but not connectionsRequests table where loggedinUser is paired with them in any way.
         // user should see all users except
@@ -195,6 +200,8 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
             ]
         })
         .select(USER_SAFE_DATA)
+        .skip(skip)
+        .limit(limit)
         ;
 
         res.send(userFeed);
