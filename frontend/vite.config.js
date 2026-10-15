@@ -8,4 +8,8 @@ export default defineConfig({
     tailwindcss(),
     react()
   ],
+  server: {
+    host: '0.0.0.0',
+    allowedHosts: ['seriously-measurements-cylinder-birth.trycloudflare.com']
+  }
 })
