@@ -10,6 +10,10 @@ export default defineConfig({
   ],
   server: {
     host: '0.0.0.0',
-    allowedHosts: ['seriously-measurements-cylinder-birth.trycloudflare.com']
+    allowedHosts: ['seriously-measurements-cylinder-birth.trycloudflare.com'],
+    watch: {
+      usePolling: true,
+      interval: 10000
+    }
   }
 })
