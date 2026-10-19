@@ -12,4 +12,5 @@ cd /workspaces/career_shif & ./cloudflared tunnel --url http://localhost:5173
 podman exec --user vscode -it nice_villani bash
 
 http://host.containers.internal:5173/
-
+http://localhost:5173/
+http://localhost:8080/

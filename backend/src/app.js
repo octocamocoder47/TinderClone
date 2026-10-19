@@ -7,7 +7,7 @@ const app = express();
 
 app.use(cors({
     origin: "http://localhost:5173",
-    Credential: true,
+    credentials: true,
 }));
 app.use(express.json());
 app.use(cookieParser());
@@ -32,4 +32,3 @@ connectDB().then(() => {
 }).catch(err => {
     console.error("Database can not be connected:", err.message);
 });
-
