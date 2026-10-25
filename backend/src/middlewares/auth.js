@@ -25,7 +25,8 @@ const userAuth = async (req, res, next) => {
     try {
         const {token} = req.cookies;
         if(!token) {
-            throw new Error("Invalid Token")
+            // throw new Error("Invalid Token")
+            return res.status(401).send("Please Login");
         }
         const userId = await jwt.verify(token, JWT_SECRET);
         const user = await User.findById(userId);

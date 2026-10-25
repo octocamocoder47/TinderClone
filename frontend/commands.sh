@@ -14,3 +14,7 @@ podman exec --user vscode -it nice_villani bash
 http://host.containers.internal:5173/
 http://localhost:5173/
 http://localhost:8080/
+
+MSYS_NO_PATHCONV=1 podman exec -it --user vscode -w /workspaces/career_shift/devTinder/frontend/ nice_villani bash
+
+MSYS_NO_PATHCONV=1 podman exec -it --user vscode -w /workspaces/career_shift/devTinder/backend/ nice_villani bash
